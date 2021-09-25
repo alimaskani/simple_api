@@ -42,7 +42,7 @@ class ColorController extends Controller
         /*** validate ***/
         $validate = $request->validate([
             'name' => 'required',
-            'hexcode' => 'required|unique:colors'
+            'hexcode' => 'required|unique:colors,id'
         ]);
 
         $color = Color::find($id);

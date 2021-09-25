@@ -21,20 +21,18 @@ use App\Http\Controllers\PermissionController;
 |
 */
 
-
+Route::group(['prefix' => 'role'] , function (){
+    Route::post('store',[PermissionController::class,'Store']);
+    Route::post('update/{id}',[PermissionController::class,'Update']);
+    Route::post('delete/{id}',[PermissionController::class,'destroy']);
+    Route::post('search',[PermissionController::class,'Index']);
+});
 
 Route::group(['prefix' => 'user'] , function (){
     Route::post('store',[UserController::class,'Store']);
     Route::post('update/{id}',[UserController::class,'Update']);
     Route::post('delete/{id}',[UserController::class,'destroy']);
     Route::post('search',[UserController::class,'Index']);
-});
-
-Route::group(['prefix' => 'role'] , function (){
-    Route::post('store',[PermissionController::class,'Store']);
-    Route::post('update/{id}',[PermissionController::class,'Update']);
-    Route::post('delete/{id}',[PermissionController::class,'destroy']);
-    Route::post('search',[PermissionController::class,'Index']);
 });
 
 Route::group(['prefix' => 'color'] , function (){

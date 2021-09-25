@@ -59,7 +59,7 @@ class UserController extends Controller
             'address' => 'required|min:3|max:255',
             'username' => 'required|min:3',
             'password' => 'required|min:3',
-            'email' => 'required|unique:users',
+            'email' => 'required|unique:users,id',
             'permission_id' => 'required',
         ]);
 

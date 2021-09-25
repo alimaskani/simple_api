@@ -40,7 +40,7 @@ class PermissionController extends Controller
     public function Update(Request $request,$id){
         /*** validate ***/
         $validate = $request->validate([
-            'name' => 'required|unique:permissions',
+            'name' => 'required|unique:permissions,id',
             'image' => 'required',
         ]);
 
