@@ -43,6 +43,12 @@ class UserController extends Controller
             'permission_id' => 'required|exists:permissions,id',
         ]);
 
+        /*** set default image ***/
+        $set_image = $request->image;
+        if (is_null($request->image)){
+            $set_image = "adm.jpg";
+        }
+
         User::query()->create([
             'name' => $request->input('name'),
             'family' => $request->input('family'),
@@ -51,11 +57,11 @@ class UserController extends Controller
             'username' => $request->input('username'),
             'password' => $request->input('password'),
             'email' => $request->input('email'),
+            'image' => $set_image,
             'permission_id' => $request->input('permission_id'),
-            'image' => $request->input('image'),
         ]);
 
-        return response()->json(["message" => "This Item SuccessFully Insert"], Response::HTTP_CREATED);
+        return response()->json(["message" => "Item SuccessFully Inserted"], Response::HTTP_CREATED);
     }
 
     public function update(Request $request,$id){
