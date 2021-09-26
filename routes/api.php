@@ -22,38 +22,43 @@ use App\Http\Controllers\PermissionController;
 */
 
 Route::group(['prefix' => 'role'] , function (){
-    Route::post('store',[PermissionController::class,'Store']);
-    Route::post('update/{id}',[PermissionController::class,'Update']);
-    Route::post('delete/{id}',[PermissionController::class,'destroy']);
+    Route::post('store',[PermissionController::class,'store']);
+    Route::post('show',[PermissionController::class,'show']);
     Route::post('search',[PermissionController::class,'Index']);
+    Route::post('update/{id}',[PermissionController::class,'update']);
+    Route::post('delete/{id}',[PermissionController::class,'destroy']);
 });
 
 Route::group(['prefix' => 'user'] , function (){
-    Route::post('store',[UserController::class,'Store']);
-    Route::post('update/{id}',[UserController::class,'Update']);
+    Route::post('show',[UserController::class,'show']);
+    Route::post('store',[UserController::class,'store']);
+    Route::post('search',[UserController::class,'index']);
+    Route::post('update/{id}',[UserController::class,'update']);
     Route::post('delete/{id}',[UserController::class,'destroy']);
-    Route::post('search',[UserController::class,'Index']);
 });
 
 Route::group(['prefix' => 'color'] , function (){
-    Route::post('store',[ColorController::class,'Store']);
-    Route::post('search',[ColorController::class,'Index']);
-    Route::post('update/{id}',[ColorController::class,'Update']);
+    Route::post('store',[ColorController::class,'store']);
+    Route::post('show',[ColorController::class,'show']);
+    Route::post('search',[ColorController::class,'index']);
+    Route::post('update/{id}',[ColorController::class,'update']);
     Route::post('delete/{id}',[ColorController::class,'destroy']);
 });
 
 Route::group(['prefix' => 'brand'] , function (){
-    Route::post('search',[BrandController::class,'Index']);
-    Route::post('store',[BrandController::class,'Store']);
-    Route::post('update/{id}',[BrandController::class,'Update']);
+    Route::post('show',[BrandController::class,'show']);
+    Route::post('store',[BrandController::class,'store']);
+    Route::post('search',[BrandController::class,'index']);
+    Route::post('update/{id}',[BrandController::class,'update'])->where('id','[0-9]+');
     Route::post('delete/{id}',[BrandController::class,'destroy']);
 });
 
 Route::group(['prefix' => 'item'] , function (){
-    Route::post('store',[ItemController::class,'Store']);
-    Route::post('search',[ItemController::class,'Index']);
-    Route::post('update/{id}',[ItemController::class,'Update']);
-    Route::post('delete/{id}',[ItemController::class,'Destroy']);
+    Route::post('show',[ItemController::class,'show']);
+    Route::post('store',[ItemController::class,'store']);
+    Route::post('search',[ItemController::class,'index']);
+    Route::post('update/{id}',[ItemController::class,'update']);
+    Route::post('delete/{id}',[ItemController::class,'destroy']);
 });
 
 

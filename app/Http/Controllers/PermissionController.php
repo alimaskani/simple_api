@@ -4,57 +4,94 @@ namespace App\Http\Controllers;
 
 use App\Models\Permission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
 {
-    public function Index(Request $request){
-
-        $name  = $request->name;
-        $count_page = $request->count_page;
-
-        $permission = DB::table('permissions')->where('name', 'LIKE', '%' . $name . '%')->paginate($count_page);
-
-        if ($permission->isEmpty()){
-            return response()->json('Not Found Your Permission',400);
-        }
-
-        return response()->json($permission,201);
+    public function show()
+    {
+        $permissions = Permission::all();
+        return response()->json(["data" => $permissions], Response::HTTP_OK);
     }
 
-    public function Store(Request $request){
+    public function index(Request $request)
+    {
+        $name = $request->name;
+        $count_page = $request->count_page;
+
+        $permission = Permission::query()
+            ->where('name', 'LIKE', '%' . $name . '%')
+            ->paginate($count_page);
+
+        if ($permission->isEmpty()) {
+            return response()->json(["error" => "Not Found Permission"], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json(['data' => $permission], Response::HTTP_OK);
+    }
+
+    public function store(Request $request)
+    {
         /*** validate ***/
         $validate = $request->validate([
             'name' => 'required|unique:permissions',
             'image' => 'required',
         ]);
 
-        Permission::create([
+        Permission::query()->create([
             'name' => $request->input('name'),
             'image' => $request->input('image'),
         ]);
 
-        return response()->json("This Item SuccessFully Insert", 201);
+        return response()->json(["message" => "This Item SuccessFully Inserted"], Response::HTTP_CREATED);
     }
 
-    public function Update(Request $request,$id){
+    public function update(Request $request, $id)
+    {
         /*** validate ***/
-        $validate = $request->validate([
-            'name' => 'required|unique:permissions,id',
-            'image' => 'required',
+        $validator = Validator::make(
+            [
+                'id' => $id,
+                'name' => $request->input('name'),
+                'image' => $request->input('image')
+            ],
+            [
+                'id' => 'required|exists:permissions,id',
+                'name' => 'required|unique:permissions,name,' . $id,
+                'image' => 'required'
+            ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['success' => false, 'errors' => $validator->messages()],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $item = Permission::query()->find($id);
+        $item->update([
+            'name' => $request->input('name'),
+            'image' => $request->input('image'),
         ]);
 
-        $item =  Permission::find($id);
-        $item->update($request->all());
-
-        return response()->json("This Item SuccessFully Update", 201);
+        return response()->json(["message" => "This Item SuccessFully Updated"], Response::HTTP_OK);
     }
 
-    public function Destroy(Request $request,$id){
-        $item = Permission::find($id);
+    public function destroy(Request $request, $id)
+    {
+        /*** validation ***/
+        /*** validate ***/
+        $validator = Validator::make(['id' => $id], ['id' => 'required|exists:permissions,id',]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()],
+                Response::HTTP_UNPROCESSABLE_ENTITY);}
+
+
+        $item = Permission::query()->find($id);
         $item->delete();
 
-        return response()->json("This Item SuccessFully Delete", 201);
+        return response()->json(["message" => "This Item SuccessFully Deleted"], Response::HTTP_CREATED);
     }
 
 }

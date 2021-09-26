@@ -23,42 +23,39 @@ class UserSeeder extends Seeder
         $faker = Faker::create('App\Article');
 
         $users = [
-           [ 'name' =>$faker->firstName,
-               'family' =>$faker->lastName,
-               'address' => $faker->address(),
-               'username' => $faker->unique()->userName(),
-               'email' => $faker->unique()->safeEmail(),
-               'password' => Hash::make('password'),
-               'image' => $faker->image,
-               'phone' => $faker->e164PhoneNumber(),
-               'permission_id'=>1
-           ],
-            [ 'name' =>$faker->firstName,
-                'family' =>$faker->lastName,
+            ['name' => $faker->firstName,
+                'family' => $faker->lastName,
                 'address' => $faker->address(),
                 'username' => $faker->unique()->userName(),
                 'email' => $faker->unique()->safeEmail(),
                 'password' => Hash::make('password'),
                 'image' => $faker->image,
                 'phone' => $faker->e164PhoneNumber(),
-                'permission_id'=>2
+                'permission_id' => 1
             ],
-
-            [ 'name' =>$faker->firstName,
-                'family' =>$faker->lastName,
+            ['name' => $faker->firstName,
+                'family' => $faker->lastName,
+                'address' => $faker->address(),
+                'username' => $faker->unique()->userName(),
+                'email' => $faker->unique()->safeEmail(),
+                'password' => Hash::make('password'),
+                'image' => $faker->image,
+                'phone' => $faker->e164PhoneNumber(),
+                'permission_id' => 2
+            ],
+            ['name' => $faker->firstName,
+                'family' => $faker->lastName,
                 'address' => $faker->address(),
                 'username' => $faker->unique()->userName(),
                 'email' => $faker->unique()->safeEmail(),
                 'password' => Hash::make('password'),
                 'image' => $faker->image,
                 'phone' => $faker->phoneNumber(),
-                'permission_id'=>3
+                'permission_id' => 3
             ],
         ];
 
-        foreach ($users as $user){
-            User::create($user);
-        }
+        User::query()->insert($users);
 
     }
 }

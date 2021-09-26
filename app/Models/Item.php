@@ -16,11 +16,12 @@ class Item extends Model
         'subtitle'
     ];
 
-    public function color(){
+    public function colors(){
         return$this->hasMany(Color::class);
     }
 
     public function brand(){
         return $this->belongsTo(Brand::class);
     }
+
 }

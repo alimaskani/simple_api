@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('phone');
             $table->string('username');
             $table->string('password');
-            $table->string('image')->default('person.jpg');
+            $table->string('image')->default('person.jpg')->nullable();
             $table->string('email')->unique();
 
             $table->unsignedBigInteger('permission_id');

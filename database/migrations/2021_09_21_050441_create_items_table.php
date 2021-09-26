@@ -18,10 +18,10 @@ class CreateItemsTable extends Migration
             $table->string('name');
 
             $table->unsignedBigInteger('color_id');
-            $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade');
+            $table->foreign('color_id')->references('id')->on('colors');
 
             $table->unsignedBigInteger('brand_id');
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+            $table->foreign('brand_id')->references('id')->on('brands');
 
             $table->string('subtitle');
 

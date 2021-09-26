@@ -11,7 +11,7 @@ class Color extends Model
 
     protected $fillable = [
         'name',
-        'hexcode'
+        'hex_code'
     ];
 
     public function item(){

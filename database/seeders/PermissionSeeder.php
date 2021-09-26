@@ -21,8 +21,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'client' , 'image'=>'client.jpg'],
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::create($permission);
-        }
+        Permission::query()->insert($permissions);
+
     }
 }

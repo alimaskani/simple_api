@@ -4,38 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
 
-    public function Index(Request $request){
+    public function show(){
+        $users = User::all();
+
+        return response()->json(["data" =>$users],Response::HTTP_OK);
+    }
+
+    public function index(Request $request){
         $name  = $request->name;
         $count_page = $request->count_page;
 
-        $users = DB::table('users')->where('name', 'LIKE', '%' . $name . '%')->paginate($count_page);
+        $user = DB::table('users')->where('name', 'LIKE', '%' . $name . '%')->paginate($count_page);
 
-        if ($users->isEmpty()){
-            return response()->json('Please Enter Name ',400);
+        if ($user->isEmpty()){
+            return response()->json(["message" => "Not Found User "],Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json($users,201);
+        return response()->json(["user" => $user ],Response::HTTP_OK);
     }
 
-    public function Store(Request $request){
+    public function store(Request $request){
         /*** validate ***/
         $request->validate([
             'name' => 'required',
             'family' => 'required',
-            'phone' => 'required|numeric',
+            'phone' => 'required',
             'address' => 'required|min:3|max:255',
             'username' => 'required|min:3',
             'password' => 'required|min:3',
             'email' => 'required|unique:users',
-            'permission_id' => 'required',
+            'permission_id' => 'required|exists:permissions,id',
         ]);
 
-        User::create([
+        User::query()->create([
             'name' => $request->input('name'),
             'family' => $request->input('family'),
             'phone' => $request->input('phone'),
@@ -47,33 +55,72 @@ class UserController extends Controller
             'image' => $request->input('image'),
         ]);
 
-        return response()->json("This Item SuccessFully Insert", 201);
+        return response()->json(["message" => "This Item SuccessFully Insert"], Response::HTTP_CREATED);
     }
 
-    public function Update(Request $request,$id){
+    public function update(Request $request,$id){
         /*** validate ***/
-        $validate = $request->validate([
-            'name' => 'required',
-            'family' => 'required',
-            'phone' => 'required|numeric',
-            'address' => 'required|min:3|max:255',
-            'username' => 'required|min:3',
-            'password' => 'required|min:3',
-            'email' => 'required|unique:users,id',
-            'permission_id' => 'required',
+        $validator = Validator::make(
+            [
+                'id' => $id,
+                'name' => $request->input('name'),
+                'family' => $request->input('family'),
+                'phone' => $request->input('phone'),
+                'address' => $request->input('address'),
+                'username' => $request->input('username'),
+                'password' => $request->input('password'),
+                'email' => $request->input('email'),
+                'image' => $request->input('image'),
+                'permission_id' => $request->input('permission_id'),
+            ],
+            [
+                'id' => 'required|exists:users,id',
+                'name' => 'required',
+                'family' => 'required',
+                'phone' => 'required',
+                'address' => 'required|min:3|max:255',
+                'username' => 'required|min:3|unique:users,username,'.$id,
+                'password' => 'required|min:3',
+                'email' => 'required|email|unique:users,email,'.$id,
+                'permission_id' => 'required|exists:permissions,id',
+            ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['success' => false, 'errors' => $validator->messages()],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $item =  User::query()->find($id);
+        $item->update([
+            'name' => $request->input('name'),
+            'family' => $request->input('family'),
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address'),
+            'username' => $request->input('username'),
+            'password' => $request->input('password'),
+            'email' => $request->input('email'),
+            'permission_id' => $request->input('permission_id'),
+            'image' => $request->input('image'),
         ]);
 
-        $item =  User::find($id);
-        $item->update($request->all());
-
-        return response()->json("This Item SuccessFully Update", 201);
+        return response()->json(["message" => "This Item SuccessFully Update"], Response::HTTP_OK);
     }
 
-    public function Destroy(Request $request,$id){
-        $item = User::find($id);
+    public function destroy(Request $request,$id){
+        /*** validate ***/
+        $validator = Validator::make(['id' => $id], ['id' => 'required|exists:users,id',]);
+        if ($validator->fails()) {
+            return response()->json(
+                ['success' => false, 'errors' => $validator->messages()],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+
+        $item = User::query()->find($id);
         $item->delete();
 
-        return response()->json("This Item SuccessFully Delete", 201);
+        return response()->json(["message" => "This Item SuccessFully Delete"], Response::HTTP_OK);
     }
 
 }
